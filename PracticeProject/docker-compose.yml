@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  dsrnetschool_sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+
+  dsrnetschool_redis:
+    image: redis
+
+  dsrnetschool_rabbitmq:
+    image: rabbitmq:3-management
+
+  dsrnetschool_api:
+    image: ${DOCKER_REGISTRY-}dsrnetschoolapi
+    build:
+      context: .
+      dockerfile: Systems/Api/DSRNetSchool.API/Dockerfile
+    depends_on:
+      - dsrnetschool.sqlserver
+      - dsrnetschool.rabbitmq 
+
+  dsrnetschool_identity:
+    image: ${DOCKER_REGISTRY-}dsrnetschoolis
+    build:
+      context: .
+      dockerfile: Systems/Identity/DSRNetSchool.Identity/Dockerfile
+    depends_on:
+      - dsrnetschool.sqlserver
+      - dsrnetschool.rabbitmq 
+

@@ -1,0 +1,55 @@
+version: '3.4'
+
+services:
+  dsrnetschool_sqlserver:
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Passw0rd
+      - MSSQL_PID=Express
+    ports:
+      - "21433:1433"
+    networks:
+      - shared-dsrnetschool-net
+    volumes:      
+      - sqlserver-data:/var/opt/mssql
+
+  dsrnetschool_redis:
+    ports:
+      - "26379:6379"
+    networks:
+      - shared-dsrnetschool-net
+
+  dsrnetschool_rabbitmq:
+    ports:
+      - "25672:5672"
+      - "25673:5673"
+      - "35672:15672" 
+    networks:
+      - shared-dsrnetschool-net
+    volumes:      
+      - rabbitmq-data:/var/lib/rabbitmq/
+
+  dsrnetschool_api:
+    ports:
+      - "20000:80"
+    networks:
+      - shared-dsrnetschool-net
+    env_file:
+      - env.api  
+
+  dsrnetschool_identity:
+    ports:
+      - "20001:80"
+    networks:
+      - shared-dsrnetschool-net
+    env_file:
+      - env.identity
+
+volumes:
+  sqlserver-data:
+  rabbitmq-data:
+
+networks:
+  shared-dsrnetschool-net:
+    name: DSRNetSchool
+    driver: bridge
