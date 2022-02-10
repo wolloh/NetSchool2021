@@ -27,7 +27,8 @@ public static class HealthCheckConfiguration
     /// <param name="app">Application</param>
     public static void UseAppHealthCheck(this WebApplication app)
     {
-        app.MapHealthChecks("/health", new HealthCheckOptions()
+        app.MapHealthChecks("/health");
+        app.MapHealthChecks("/health/detail", new HealthCheckOptions()
         {
             ResponseWriter = WriteHealthCheckResponse,
             AllowCachingResponses = false,
